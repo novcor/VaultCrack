@@ -17,7 +17,9 @@ python src/vaultcrack.py --input transactions.json
 
 ## Support Us
 If this tool helps you in your research or blockchain journey, please consider supporting us:
-[Buy Me a Coffee](https://www.buymeacoffee.com/yourusername)
+[Buy Me a Coffee](https://www.buymeacoffee.com/novacore)
 
+btc
+bc1qah874430h6sqylrj8xzd5cwdaa072nze2egez2
 ## License
 MIT
