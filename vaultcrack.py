@@ -1,11 +1,13 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox
 import json
 from collections import defaultdict
+import os
 
-def scan_r_reuse(input_file, output_file=None):
+def scan_r_reuse_gui(input_file, output_file):
     r_map = defaultdict(list)
     results = []
 
-    # Read each transaction from JSONL
     with open(input_file, 'r') as f:
         for line in f:
             tx = json.loads(line)
@@ -15,7 +17,6 @@ def scan_r_reuse(input_file, output_file=None):
                 continue
             r_map[r].append(txid)
 
-    # Detect reused r-values
     for r_value, txids in r_map.items():
         if len(txids) > 1:
             results.append({
@@ -24,20 +25,38 @@ def scan_r_reuse(input_file, output_file=None):
                 "suspected_duplicate": True
             })
 
-    # Output
-    if output_file:
-        with open(output_file, 'w') as f:
-            json.dump(results, f, indent=2)
-    else:
-        for entry in results:
-            print(f"[!] R-value reuse detected: {entry['r_value']}")
-            print(f"    Transactions: {', '.join(entry['txids'])}")
+    with open(output_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    return output_file
+
+def run_gui():
+    def choose_file():
+        file_path = filedialog.askopenfilename(title="Select JSONL File", filetypes=[("JSONL Files", "*.jsonl")])
+        if file_path:
+            input_entry.delete(0, tk.END)
+            input_entry.insert(0, file_path)
+
+    def run_scan():
+        input_file = input_entry.get()
+        if not input_file or not os.path.exists(input_file):
+            messagebox.showerror("Error", "Please select a valid input file.")
+            return
+
+        output_file = os.path.splitext(input_file)[0] + "_rscan_results.json"
+        result_path = scan_r_reuse_gui(input_file, output_file)
+        messagebox.showinfo("Scan Complete", f"Scan complete.\nResults saved to:\n{result_path}")
+
+    root = tk.Tk()
+    root.title("VaultCrack R-Value Reuse Scanner")
+
+    tk.Label(root, text="Select transaction file (.jsonl):").pack(pady=5)
+    input_entry = tk.Entry(root, width=60)
+    input_entry.pack(padx=10)
+    tk.Button(root, text="Browse", command=choose_file).pack(pady=5)
+    tk.Button(root, text="Run Scan", command=run_scan, bg="#66cc66").pack(pady=10)
+
+    root.mainloop()
 
 if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(description="VaultCrack R-value Reuse Scanner")
-    parser.add_argument('--input', type=str, required=True, help='Path to input JSONL file')
-    parser.add_argument('--output', type=str, help='Path to save results as JSON')
-    args = parser.parse_args()
-
-    scan_r_reuse(args.input, args.output)
+    run_gui()
