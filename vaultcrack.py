@@ -48,13 +48,20 @@ def run_gui():
         messagebox.showinfo("Scan Complete", f"Scan complete.\nResults saved to:\n{result_path}")
 
     root = tk.Tk()
-    root.title("VaultCrack R-Value Reuse Scanner")
+    root.title("VaultCrack – NovaCore Scanner")
+    root.configure(bg="#000000")
 
-    tk.Label(root, text="Select transaction file (.jsonl):").pack(pady=5)
-    input_entry = tk.Entry(root, width=60)
+    label = tk.Label(root, text="Select transaction file (.jsonl):", bg="#000000", fg="#ff69b4", font=("Arial", 12))
+    label.pack(pady=5)
+
+    input_entry = tk.Entry(root, width=60, bg="#1a1a1a", fg="#ff69b4", insertbackground="#ff69b4")
     input_entry.pack(padx=10)
-    tk.Button(root, text="Browse", command=choose_file).pack(pady=5)
-    tk.Button(root, text="Run Scan", command=run_scan, bg="#66cc66").pack(pady=10)
+
+    browse_btn = tk.Button(root, text="Browse", command=choose_file, bg="#ff69b4", fg="#000000", activebackground="#ff85c1")
+    browse_btn.pack(pady=5)
+
+    scan_btn = tk.Button(root, text="Run Scan", command=run_scan, bg="#ff69b4", fg="#000000", activebackground="#ff85c1")
+    scan_btn.pack(pady=10)
 
     root.mainloop()
 
